@@ -88,6 +88,7 @@ namespace EventGhostPlus
     [PluginIcons("EventGhostPlus.Resources.EventGhostPlus.png", "EventGhostPlus.Resources.EventGhostPlusDisabled.png")]
     public class EventGhostPlus : IPlugin, ISetupForm, IPluginReceiver
     {
+        public static bool SystemStandby;
         public static bool DialogBusy;
         public static bool Sending;
         public static List<QueueRec> Queue = new List<QueueRec>();
@@ -114,6 +115,7 @@ namespace EventGhostPlus
 
         public static bool DebugMode;
 
+
         ProcessStartInfo egStartInfo = new ProcessStartInfo();
 
         WindowName Windows = new WindowName();
@@ -128,9 +130,36 @@ namespace EventGhostPlus
         {
             const int WM_APP = 0x8000;
             const int ID_MESSAGE_COMMAND = 0x18;
+            const int WM_POWERBROADCAST = 0x218;
+            const int ID_STANDBY = 4;
+            const int ID_RESUME = 18;
+            bool networkUp;
 
             switch (m.Msg)
             {
+                case WM_POWERBROADCAST:
+                    if (DebugMode) Logger.Debug("Window Message received: WM_POWERBROADCAST WParam: " + m.WParam.ToString() + " LParam: " + m.LParam.ToString());
+                    if (m.WParam.ToInt32() == ID_STANDBY)
+                    {
+                        SendEvent("System.Standby", null);
+                        SystemStandby = true;
+                    }
+                    if (m.WParam.ToInt32() == ID_RESUME)
+                    {
+                        if (isTcpip)
+                        {
+                            networkUp = false;
+                            while (!networkUp)
+                            {
+                                networkUp = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+                            }
+                        }
+                        SystemStandby = false;
+                        SendEvent("System.Resume", null);
+                    }
+
+                    return false;
+
                 case WM_APP:
                     if (m.WParam.ToInt32() == ID_MESSAGE_COMMAND)
                     {
@@ -147,6 +176,7 @@ namespace EventGhostPlus
        
         public EventGhostPlus()
         {
+            SystemStandby = false;
             Sending = false;
             using (Settings xmlReader = new Settings(Config.GetFile(Config.Dir.Config, "MediaPortal.xml")))
             {
@@ -257,58 +287,66 @@ namespace EventGhostPlus
 
         #region EG_Network_Event_Receiver_Sender
 
-        static void eg_Event_FromNetworkEventSender(object sender, NetWorkEventReceiver_EventArgs e)
+        void eg_Event_FromNetworkEventSender(object sender, NetWorkEventReceiver_EventArgs e)
         {
             Logger.Info("Message received.");
             if (DebugMode) Logger.Debug("Network Event : " + e.name);
             if (e.name.Equals("MediaPortal.Message"))
             {
-                if (DebugMode) Logger.Debug("Payload count: " + e.payload.Count.ToString());
-                foreach (string k in e.payload)
+                if (e.payload[0] == "EG+BtnSnd")
                 {
-                    if (DebugMode) Logger.Debug("  payload = " + k);
+                    if (DebugMode) Logger.Debug("Remote Button Received: " + e.payload[1]);
+                    inputHandler.MapAction(Convert.ToInt32(e.payload[3]) & 0xFFFF);
                 }
-                string header = e.payload[0];
-                string line1 = e.payload[1];
-                string line2 = e.payload[2];
-                int timeout = 60;
-                string image = "";
-                if (e.payload.Count > 3)
+                else
                 {
-                    if (DebugMode) Logger.Debug("More than 3 payloads");
-                    if ((e.payload[3] != null) && (e.payload[3] != ""))
+                    if (DebugMode) Logger.Debug("Payload count: " + e.payload.Count.ToString());
+                    foreach (string k in e.payload)
                     {
-                        timeout = Convert.ToInt16(e.payload[3]);
+                        if (DebugMode) Logger.Debug("  payload = " + k);
                     }
-                    else
+                    string header = e.payload[0];
+                    string line1 = e.payload[1];
+                    string line2 = e.payload[2];
+                    int timeout = 60;
+                    string image = "";
+                    if (e.payload.Count > 3)
                     {
-                        timeout = 60;
+                        if (DebugMode) Logger.Debug("More than 3 payloads");
+                        if ((e.payload[3] != null) && (e.payload[3] != ""))
+                        {
+                            timeout = Convert.ToInt16(e.payload[3]);
+                        }
+                        else
+                        {
+                            timeout = 60;
+                        }
                     }
-                }
-                if (DebugMode) Logger.Debug("Received Message Timeout: " + timeout.ToString());
-                if (e.payload.Count > 4)
-                {
-                    if (DebugMode) Logger.Debug("More than 4 payloads");
-                    if ((e.payload[4] != null) && (e.payload[4] != ""))
+                    if (DebugMode) Logger.Debug("Received Message Timeout: " + timeout.ToString());
+                    if (e.payload.Count > 4)
                     {
-                        image = e.payload[4];
+                        if (DebugMode) Logger.Debug("More than 4 payloads");
+                        if ((e.payload[4] != null) && (e.payload[4] != ""))
+                        {
+                            image = e.payload[4];
+                        }
                     }
-                }
-                if (DebugMode) Logger.Debug("ImageLocation: " + image);
-                var QI = new QueueRec();
-                QI.header = header;
-                QI.line1 = line1;
-                QI.line2 = line2;
-                QI.timeout = timeout;
-                QI.image = image;
-                if (DebugMode) Logger.Debug("Add Message to Queue");
-                Queue.Add(QI);
-                if (!EventGhostPlus.DialogBusy)
-                {
-                    if (DebugMode) Logger.Debug("Dialog is not busy, fire ShowQueue Thread");
-                    var Q = new QueueHandler();
-                    var QThread = new Thread(Q.ShowQueue);
-                    QThread.Start();
+                    if (DebugMode) Logger.Debug("ImageLocation: " + image);
+                    var QI = new QueueRec();
+                    QI.header = header;
+                    QI.line1 = line1;
+                    QI.line2 = line2;
+                    QI.timeout = timeout;
+                    QI.image = image;
+                    if (DebugMode) Logger.Debug("Add Message to Queue");
+                    Queue.Add(QI);
+                    if (!EventGhostPlus.DialogBusy)
+                    {
+                        if (DebugMode) Logger.Debug("Dialog is not busy, fire ShowQueue Thread");
+                        var Q = new QueueHandler();
+                        var QThread = new Thread(Q.ShowQueue);
+                        QThread.Start();
+                    }
                 }
             }
         }
@@ -557,89 +595,101 @@ namespace EventGhostPlus
 
         private void SendEvent(string Event, string[] payload)
         {
-            if (!Sending)
+            if (!SystemStandby)
             {
-                Sending = true;
-                Event = "MediaPortal." + Event;
-                if (DebugMode) Logger.Debug("Event to be sent: " + Event);
-                string status;
-                if (!isTcpip)
+                if (!Sending)
                 {
-                    if (DebugMode) Logger.Debug("Submitting event locally.");
-                    egStartInfo.Arguments = "-e " + Event;
-                    if (payload != null && payload.Length > 0)
+                    Sending = true;
+                    Event = "MediaPortal." + Event;
+                    if (DebugMode) Logger.Debug("Event to be sent: " + Event);
+                    string status;
+                    if (!isTcpip)
                     {
-                        foreach (string s in payload)
+                        if (DebugMode) Logger.Debug("Submitting event locally.");
+                        egStartInfo.Arguments = "-e " + Event;
+                        if (payload != null && payload.Length > 0)
                         {
-                            if (DebugMode) Logger.Debug("Payload: " + s);
-                            egStartInfo.Arguments = egStartInfo.Arguments + " " + s;
-                        }
-                    }
-                    try
-                    {
-                        if (DebugMode) Logger.Debug("arguments to run: " + egStartInfo.Arguments);
-                        Process egExeProcess = Process.Start(egStartInfo);
-                    }
-                    catch
-                    {
-                        Logger.Error("Error starting EventGhost, EventGhost path probably not set, run setup.");                        
-                    }
-                }
-                else
-                {
-                    if (DebugMode) Logger.Debug("Submitting event over Network.");
-                    if (PWDEncrypted)
-                    {
-                        if (DebugMode)
-                        {
-                            Logger.Debug("Password is encrypted.");
-                            Logger.Debug("Submitting event to server: " + Host + ":" + Port);
-                            if (payload != null)
+                            foreach (string s in payload)
                             {
-                                foreach (string s in payload)
-                                {
-                                    if (DebugMode) Logger.Debug("Payload: " + s);
-                                }
+                                if (DebugMode) Logger.Debug("Payload: " + s);
+                                egStartInfo.Arguments = egStartInfo.Arguments + " " + s;
                             }
                         }
-                        if ("success" != (status = eg.SendEventToNetworkEventReceiver(Host + ":" + Port, DPAPI.DecryptString(Password), Event, payload)))
+                        try
                         {
-                            Logger.Error(status);
+                            if (DebugMode) Logger.Debug("arguments to run: " + egStartInfo.Arguments);
+                            Process egExeProcess = Process.Start(egStartInfo);
                         }
-                        else
+                        catch
                         {
-                            if (DebugMode) Logger.Debug("Event sent succesfull.");
+                            Logger.Error("Error starting EventGhost, EventGhost path probably not set, run setup.");
                         }
                     }
                     else
                     {
-                        if (DebugMode)
+                        if (DebugMode) Logger.Debug("Submitting event over Network.");
+                        if (PWDEncrypted)
                         {
-                            Logger.Debug("Password is not encrypted.");
-                            Logger.Debug("Submitting event to server: " + Host + ":" + Port);
-                            if (payload != null)
+                            if (DebugMode)
                             {
-                                foreach (string s in payload)
+                                Logger.Debug("Password is encrypted.");
+                                Logger.Debug("Submitting event to server: " + Host + ":" + Port);
+                                if (payload != null)
                                 {
-                                    if (DebugMode) Logger.Debug("Payload: " + s);
+                                    foreach (string s in payload)
+                                    {
+                                        if (DebugMode) Logger.Debug("Payload: " + s);
+                                    }
                                 }
                             }
-                        }
-                        if ("success" != (status = eg.SendEventToNetworkEventReceiver(Host + ":" + Port, Password, Event, payload)))
-                        {
-                            Logger.Error(status);
+                            if ("success" !=
+                                (status =
+                                 eg.SendEventToNetworkEventReceiver(Host + ":" + Port, DPAPI.DecryptString(Password),
+                                                                    Event, payload)))
+                            {
+                                Logger.Error(status);
+                            }
+                            else
+                            {
+                                if (DebugMode) Logger.Debug("Event sent succesfull.");
+                            }
                         }
                         else
                         {
-                            if (DebugMode) Logger.Debug("Event sent succesfull.");
+                            if (DebugMode)
+                            {
+                                Logger.Debug("Password is not encrypted.");
+                                Logger.Debug("Submitting event to server: " + Host + ":" + Port);
+                                if (payload != null)
+                                {
+                                    foreach (string s in payload)
+                                    {
+                                        if (DebugMode) Logger.Debug("Payload: " + s);
+                                    }
+                                }
+                            }
+                            if ("success" !=
+                                (status =
+                                 eg.SendEventToNetworkEventReceiver(Host + ":" + Port, Password, Event, payload)))
+                            {
+                                Logger.Error(status);
+                            }
+                            else
+                            {
+                                if (DebugMode) Logger.Debug("Event sent succesfull.");
+                            }
                         }
                     }
+                    Sending = false;
                 }
-                Sending = false;
+                else
+                {
+                    if (DebugMode) Logger.Debug("Sender busy, skipping send.");
+                }
             }
             else
             {
-                if (DebugMode) Logger.Debug("Sender busy, skipping send.");
+                if (DebugMode) Logger.Debug("System in Standy, skipping send.");
             }
         }
     }
