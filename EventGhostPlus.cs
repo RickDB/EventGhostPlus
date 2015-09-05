@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +16,7 @@ using MediaPortal.Dialogs;
 using System.Threading;
 
 
-[assembly: CompatibleVersion("1.3.0.0", "1.1.6.27644")]
+[assembly: CompatibleVersion("1.1.6.27644", "1.1.6.27644")]
 [assembly: UsesSubsystem("MP.Plugins")]
 [assembly: UsesSubsystem("MP.Config")]
 [assembly: UsesSubsystem("MP.Input.Mapping")]

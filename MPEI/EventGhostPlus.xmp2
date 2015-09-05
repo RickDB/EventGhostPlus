@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Version>2.0</Version>
+  <Groups>
+    <Items>
+      <GroupItem Name="Plugin Files">
+        <ParentGroup />
+        <DisplayName>Group1</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Plugin Files</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>..\bin\x86\Release\EventGhostPlus.dll</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{830cb4ba-4dac-49b6-9af2-68ce5efc01f1}-EventGhostPlus.dll</ZipFileName>
+              <DestinationFilename>%Plugins%\Windows\EventGhostPlus.dll</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Resources">
+        <ParentGroup />
+        <DisplayName>Resources</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Resources</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>..\Resources\EventGhostPlusIcon.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{fef5dd89-4d15-4c07-9c9f-7d6ea22a7201}-EventGhostPlusIcon.png</ZipFileName>
+              <DestinationFilename>%Thumbs%\EventGhostPlus\EventGhostPlusIcon.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>..\Resources\EventGhostPlus.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{2719a43c-1d37-4a16-803a-56bf866f8553}-EventGhostPlus.xml</ZipFileName>
+              <DestinationFilename>%Base%\defaults\InputDeviceMappings\EventGhostPlus.xml</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+    </Items>
+  </Groups>
+  <Sections>
+    <Items>
+      <SectionItem Guid="28441ff5-51bf-4fff-b9c5-ba2a0ad7ae64" Name="Welcome Screen" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>Welcome to the Extension Installer for [Name]</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Description">
+              <Value>This will install [Name] version [Version] on your computer.
+It is recommended that you close all other applications before continuing.
+Click Next to continue or Cancel to exit Setup.</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items>
+            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="">
+              <Params>
+                <Items />
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+          </Items>
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Welcome Screen</PanelName>
+        <WizardButtonsEnum>NextCancel</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="9aa7e35f-c438-4e16-b828-56fc56b6405f" Name="Install Section" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header Title">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Header title</Description>
+            </SectionParam>
+            <SectionParam Name="Header description">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Description of section, shown in under section title</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items>
+            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="">
+              <Params>
+                <Items />
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+          </Items>
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Install Section</PanelName>
+        <WizardButtonsEnum>Next</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="e9b82959-a2d0-43ef-8d95-706cef9b45cb" Name="Setup Complete" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>The Extension Installer Wizard has successfully installed [Name].</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Show radio buttons">
+              <Value />
+              <ValueType>Bool</ValueType>
+              <Description>Use radiobutton in place of combobox</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items />
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Setup Complete</PanelName>
+        <WizardButtonsEnum>Finish</WizardButtonsEnum>
+      </SectionItem>
+    </Items>
+  </Sections>
+  <Dependencies>
+    <Items>
+      <DependencyItem>
+        <Type>MediaPortal</Type>
+        <Id />
+        <MinVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MinVersion>
+        <MaxVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MaxVersion>
+        <WarnOnly>false</WarnOnly>
+        <Message>requires MediaPortal version 1.1.6.27644 to 1.1.6.27644.</Message>
+        <Name>MediaPortal</Name>
+      </DependencyItem>
+    </Items>
+  </Dependencies>
+  <PluginDependencies>
+    <Items>
+      <PluginDependencyItem AssemblyName="EventGhostPlus.dll">
+        <CompatibleVersion>
+          <Items>
+            <CompatibleVersionItem>
+              <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
+              <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+            </CompatibleVersionItem>
+          </Items>
+        </CompatibleVersion>
+        <SubSystemsUsed>
+          <Items>
+            <SubSystemItem Name="MP.Config" />
+            <SubSystemItem Name="MP.Input.Mapping" />
+          </Items>
+        </SubSystemsUsed>
+      </PluginDependencyItem>
+    </Items>
+  </PluginDependencies>
+  <GeneralInfo>
+    <Name>EventGhostPlus</Name>
+    <Id>bcf8adde-0b14-43e9-87e8-3e97d64c3e74</Id>
+    <Author>DaBIGOne</Author>
+    <HomePage />
+    <ForumPage>http://forum.team-mediaportal.com/threads/eventghostplus.113463/</ForumPage>
+    <UpdateUrl>http://www.team-mediaportal.com/index.php?option=com_mtree&amp;amp;task=att_download&amp;amp;link_id=248&amp;amp;cf_id=52</UpdateUrl>
+    <Version>
+      <Major>1</Major>
+      <Minor>1</Minor>
+      <Build>3</Build>
+      <Revision>6</Revision>
+    </Version>
+    <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
+
+- Sending events to EventGhost.
+
+- Virtual Remote, listening for commands from EventGhost.</ExtensionDescription>
+    <VersionDescription>1.1.3.6
+
+- Updated installer package and rebuild against .NET 4.0 and Mediaportal 1.12</VersionDescription>
+    <DevelopmentStatus />
+    <OnlineLocation />
+    <ReleaseDate>2015-09-05T18:49:57.8244398+02:00</ReleaseDate>
+    <Tags />
+    <Location>..\Release\[Name]_[Version].mpe1</Location>
+    <Params>
+      <Items>
+        <SectionParam Name="Icon">
+          <Value>..\Resources\EventGhostPlusIcon.png</Value>
+          <ValueType>File</ValueType>
+          <Description>The icon file of the package (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Online Icon">
+          <Value />
+          <ValueType>String</ValueType>
+          <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Configuration file">
+          <Value />
+          <ValueType>Template</ValueType>
+          <Description>The file used to configure the extension.
+ If it has .exe extension the will be executed.
+ If it has .dll extension it's started like MP plugin configuration.</Description>
+        </SectionParam>
+        <SectionParam Name="Online Screenshots">
+          <Value />
+          <ValueType>String</ValueType>
+          <Description>Online stored screenshot urls separated by ; </Description>
+        </SectionParam>
+        <SectionParam Name="Force to uninstall on update">
+          <Value>yes</Value>
+          <ValueType>Bool</ValueType>
+          <Description>Show dialog and force to uninstall previous version when updating an extension. Should only be disabled if you are using an NSIS/MSI installer.</Description>
+        </SectionParam>
+      </Items>
+    </Params>
+  </GeneralInfo>
+  <UniqueFileList>
+    <Items>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>..\bin\x86\Release\EventGhostPlus.dll</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{830cb4ba-4dac-49b6-9af2-68ce5efc01f1}-EventGhostPlus.dll</ZipFileName>
+        <DestinationFilename>%Plugins%\Windows\EventGhostPlus.dll</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>..\Resources\EventGhostPlusIcon.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{fef5dd89-4d15-4c07-9c9f-7d6ea22a7201}-EventGhostPlusIcon.png</ZipFileName>
+        <DestinationFilename>%Thumbs%\EventGhostPlus\EventGhostPlusIcon.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>..\Resources\EventGhostPlus.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{2719a43c-1d37-4a16-803a-56bf866f8553}-EventGhostPlus.xml</ZipFileName>
+        <DestinationFilename>%Base%\defaults\InputDeviceMappings\EventGhostPlus.xml</DestinationFilename>
+      </FileItem>
+    </Items>
+  </UniqueFileList>
+  <ProjectSettings>
+    <FolderGroups />
+    <ProjectFilename>EventGhostPlus.xmp2</ProjectFilename>
+    <UpdatePath1 />
+    <UpdatePath2 />
+    <UpdatePath3 />
+  </ProjectSettings>
+  <IsSkin>false</IsSkin>
+</PackageClass>
