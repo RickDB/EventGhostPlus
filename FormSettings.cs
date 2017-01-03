@@ -8,7 +8,7 @@ namespace EventGhostPlus
     public partial class FormSettings : Form
     {
         //public const string ENTRY_NAME_NUMBER_OF_DEVICES = "numberOfDevices";
-        private bool PWDEncrypted;
+        private bool _pwdEncrypted;
 
         public FormSettings()
         {
@@ -16,7 +16,7 @@ namespace EventGhostPlus
         }
         
         
-        private void displayDeviceSettings()
+        private void DisplayDeviceSettings()
         {
             using (var xmlReader = new MediaPortal.Profile.Settings(Config.GetFile(Config.Dir.Config, "MediaPortal.xml")))
             {
@@ -31,25 +31,25 @@ namespace EventGhostPlus
                 tcpip_radioButton.Checked = xmlReader.GetValueAsBool(EventGhostPlus.PLUGIN_NAME, "tcpipIsEnabled", false);
                 host_textBox.Text = xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "tcpipHost", "");
                 port_textBox.Text = xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "tcpipPort", "1024");
-                PWDEncrypted = xmlReader.GetValueAsBool(EventGhostPlus.PLUGIN_NAME, "PWDEncrypted", false);
-                if (PWDEncrypted)
-                    password_textBox.Text = DPAPI.DecryptString(xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "tcpipPassword", ""));
+                _pwdEncrypted = xmlReader.GetValueAsBool(EventGhostPlus.PLUGIN_NAME, "PWDEncrypted", false);
+                if (_pwdEncrypted)
+                    password_textBox.Text = Dpapi.DecryptString(xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "tcpipPassword", ""));
                 else
                     password_textBox.Text = xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "tcpipPassword", "");
 
                 rcvport_textBox.Text = xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "ReceivePort", "1023");
-                rcvpassword_textBox.Text = DPAPI.DecryptString(xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "ReceivePassword", ""));
+                rcvpassword_textBox.Text = Dpapi.DecryptString(xmlReader.GetValueAsString(EventGhostPlus.PLUGIN_NAME, "ReceivePassword", ""));
 
                 debug_checkBox.Checked = xmlReader.GetValueAsBool(EventGhostPlus.PLUGIN_NAME, "DebugMode", false);
                 
             }
-            tcpipStatusEnabler();
+            TcpipStatusEnabler();
             
         }
         private void FormSettings_Load(object sender, EventArgs e)
         {
 
-            displayDeviceSettings();
+            DisplayDeviceSettings();
         }
 
         public static void Main()
@@ -75,11 +75,11 @@ namespace EventGhostPlus
                 xmlWriter.SetValueAsBool(EventGhostPlus.PLUGIN_NAME, "tcpipIsEnabled", tcpip_radioButton.Checked);
                 xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "tcpipHost", host_textBox.Text);
                 xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "tcpipPort", port_textBox.Text);
-                xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "tcpipPassword", DPAPI.EncryptString(password_textBox.Text));
+                xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "tcpipPassword", Dpapi.EncryptString(password_textBox.Text));
                 xmlWriter.SetValueAsBool(EventGhostPlus.PLUGIN_NAME, "PWDEncrypted", true);
 
                 xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "ReceivePort", rcvport_textBox.Text);
-                xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "ReceivePassword", DPAPI.EncryptString(rcvpassword_textBox.Text));
+                xmlWriter.SetValue(EventGhostPlus.PLUGIN_NAME, "ReceivePassword", Dpapi.EncryptString(rcvpassword_textBox.Text));
 
                 xmlWriter.SetValueAsBool(EventGhostPlus.PLUGIN_NAME, "DebugMode", debug_checkBox.Checked);
             }
@@ -123,9 +123,9 @@ namespace EventGhostPlus
 
         private void tcpip_radioButton_CheckedChanged(object sender, EventArgs e)
         {
-            tcpipStatusEnabler();
+            TcpipStatusEnabler();
         }
-        private void tcpipStatusEnabler()
+        private void TcpipStatusEnabler()
         {
             host_textBox.Enabled = tcpip_radioButton.Checked;
             port_textBox.Enabled = tcpip_radioButton.Checked;

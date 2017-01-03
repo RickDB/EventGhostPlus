@@ -12,19 +12,19 @@ namespace EventGhostPlus
 {
     public static class Logger
     {
-        private static string logFilename = Config.GetFile(Config.Dir.Log, "EventGhostPlus.log");
-        private static string backupFilename = Config.GetFile(Config.Dir.Log, "EventGhostPlus.bak");
-        private static object lockObject = new object();
+        private static string _logFilename = Config.GetFile(Config.Dir.Log, "EventGhostPlus.log");
+        private static string _backupFilename = Config.GetFile(Config.Dir.Log, "EventGhostPlus.bak");
+        private static object _lockObject = new object();
 
         static Logger()
         {
-            if (File.Exists(logFilename))
+            if (File.Exists(_logFilename))
             {
-                if (File.Exists(backupFilename))
+                if (File.Exists(_backupFilename))
                 {
                     try
                     {
-                        File.Delete(backupFilename);
+                        File.Delete(_backupFilename);
                     }
                     catch
                     {
@@ -33,7 +33,7 @@ namespace EventGhostPlus
                 }
                 try
                 {
-                    File.Move(logFilename, backupFilename);
+                    File.Move(_logFilename, _backupFilename);
                 }
                 catch
                 {
@@ -44,37 +44,37 @@ namespace EventGhostPlus
 
         public static void Info(String log)
         {
-                writeToFile(String.Format(createPrefix(), "Info", log));
+                WriteToFile(String.Format(CreatePrefix(), "Info", log));
         }
 
         public static void Debug(String log)
         {
-                writeToFile(String.Format(createPrefix(), "Debug", log));
+                WriteToFile(String.Format(CreatePrefix(), "Debug", log));
         }
 
         public static void Error(String log)
         {
-            writeToFile(String.Format(createPrefix(), "Error", log));
+            WriteToFile(String.Format(CreatePrefix(), "Error", log));
             Log.Error("EventGhostPlus: " + log);
         }
 
         public static void Warning(String log)
         {
-                writeToFile(String.Format(createPrefix(), "Warning", log));
+                WriteToFile(String.Format(CreatePrefix(), "Warning", log));
         }
 
-        private static String createPrefix()
+        private static String CreatePrefix()
         {
             return DateTime.Now + "[{0}] {1}";
         }
 
-        private static void writeToFile(String log)
+        private static void WriteToFile(String log)
         {
             try
             {
-                lock (lockObject)
+                lock (_lockObject)
                 {
-                    StreamWriter sw = File.AppendText(logFilename);
+                    StreamWriter sw = File.AppendText(_logFilename);
                     sw.WriteLine(log);
                     sw.Close();
                 }

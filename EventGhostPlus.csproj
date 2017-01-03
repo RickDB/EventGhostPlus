@@ -115,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DPAPI.cs" />
-    <Compile Include="EG_Network_Event_Receiver_Sender.cs" />
+    <Compile Include="Event handler\Receiver_Sender.cs" />
     <Compile Include="SkinInfo.cs" />
     <Compile Include="WindowName.cs" />
     <Compile Include="MountHelper.cs" />

@@ -12,13 +12,13 @@ namespace EventGhostPlus
 
         #region Enums
 
-        public enum errorCode
+        public enum ErrorCode
         {
-            info,
-            infoQuestion,
-            loadError,
-            readError,
-            major,
+            Info,
+            InfoQuestion,
+            LoadError,
+            ReadError,
+            Major,
         };
 
         #endregion
@@ -26,18 +26,18 @@ namespace EventGhostPlus
         #region Structs
 
 
-        public struct editorPaths
+        public struct EditorPaths
         {
-            public string sMPbaseDir;
-            public string skinBasePath;
-            public string cacheBasePath;
-            public string configBasePath;
-            public string langBasePath;
-            public string configuredSkinPath;
-            public string pluginPath;
-            public string fanartBasePath;
-            public string thumbsPath;
-            public string databasePath;
+            public string SMPbaseDir;
+            public string SkinBasePath;
+            public string CacheBasePath;
+            public string ConfigBasePath;
+            public string LangBasePath;
+            public string ConfiguredSkinPath;
+            public string PluginPath;
+            public string FanartBasePath;
+            public string ThumbsPath;
+            public string DatabasePath;
         }
 
         #endregion
@@ -46,7 +46,7 @@ namespace EventGhostPlus
         // Private Variables
         // Protected Variables
         // Public Variables
-        public static editorPaths mpPaths = new editorPaths();
+        public static EditorPaths MpPaths = new EditorPaths();
 
         #endregion
 
@@ -54,13 +54,13 @@ namespace EventGhostPlus
 
         public SkinInfo()
         {
-            GetMediaPortalPath(ref mpPaths);
-            readMediaPortalDirs();
+            GetMediaPortalPath(ref MpPaths);
+            ReadMediaPortalDirs();
         }
 
-        public static string GetMPThumbsPath()
+        public static string GetMpThumbsPath()
         {
-            return mpPaths.thumbsPath;
+            return MpPaths.ThumbsPath;
         }
 
 
@@ -68,19 +68,19 @@ namespace EventGhostPlus
 
         #region Public methods
 
-        public string configuredSkin
+        public string ConfiguredSkin
         {
             get
             {
-                return readMPConfiguration("skin", "name");
+                return ReadMpConfiguration("skin", "name");
             }
         }
 
-        public string minimiseMPOnExit
+        public string MinimiseMpOnExit
         {
             get
             {
-                return readMPConfiguration("general", "minimizeonexit");
+                return ReadMpConfiguration("general", "minimizeonexit");
             }
         }
 
@@ -88,44 +88,44 @@ namespace EventGhostPlus
 
         #region Private methods
         
-        void GetMediaPortalPath(ref editorPaths mpPaths)
+        void GetMediaPortalPath(ref EditorPaths mpPaths)
         {
             string sRegRoot = "SOFTWARE";
             if (IntPtr.Size > 4)
                 sRegRoot += "\\Wow6432Node";
             try
             {
-                RegistryKey MediaPortalKey = Registry.LocalMachine.OpenSubKey(sRegRoot + "\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MediaPortal\\", false);
-                if (MediaPortalKey != null)
+                RegistryKey mediaPortalKey = Registry.LocalMachine.OpenSubKey(sRegRoot + "\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MediaPortal\\", false);
+                if (mediaPortalKey != null)
                 {
-                    mpPaths.sMPbaseDir = MediaPortalKey.GetValue("InstallPath").ToString();
+                    mpPaths.SMPbaseDir = mediaPortalKey.GetValue("InstallPath").ToString();
                 }
                 else
                 {
-                    MediaPortalKey = MediaPortalKey.OpenSubKey(sRegRoot + "\\Team MediaPortal\\MediaPortal\\", false);
-                    if (MediaPortalKey != null)
+                    mediaPortalKey = mediaPortalKey.OpenSubKey(sRegRoot + "\\Team MediaPortal\\MediaPortal\\", false);
+                    if (mediaPortalKey != null)
                     {
-                        mpPaths.sMPbaseDir = MediaPortalKey.GetValue("ApplicationDir").ToString();
+                        mpPaths.SMPbaseDir = mediaPortalKey.GetValue("ApplicationDir").ToString();
                     }
                     else
-                        mpPaths.sMPbaseDir = null;
+                        mpPaths.SMPbaseDir = null;
                 }
             }
             catch (Exception e)
             {
                 Logger.Error("Exception while attempting to read MediaPortal location from registry\n\nMediaPortal must be installed, is MediaPortal Installed?\n\n" + e.Message.ToString());
-                mpPaths.sMPbaseDir = null;
+                mpPaths.SMPbaseDir = null;
             }
         }
 
-        void readMediaPortalDirs()
+        void ReadMediaPortalDirs()
         {
             // Check if user MediaPortalDirs.xml exists in Personal Directory
-            string PersonalFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string fMPdirs = Path.Combine(PersonalFolder, @"Team MediaPortal\MediaPortalDirs.xml");
+            string personalFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string fMPdirs = Path.Combine(personalFolder, @"Team MediaPortal\MediaPortalDirs.xml");
             
             if (!File.Exists(fMPdirs))
-                fMPdirs = mpPaths.sMPbaseDir + "\\MediaPortalDirs.xml";
+                fMPdirs = MpPaths.SMPbaseDir + "\\MediaPortalDirs.xml";
 
             XmlDocument doc = new XmlDocument();
             if (!File.Exists(fMPdirs))
@@ -144,7 +144,7 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.skinBasePath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.SkinBasePath = GetMediaPortalDir(path.InnerText);
                     }
                 }
                 // get the Cache base path
@@ -153,7 +153,7 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.cacheBasePath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.CacheBasePath = GetMediaPortalDir(path.InnerText);
                     }
                 }
                 // get the Config base path
@@ -162,7 +162,7 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.configBasePath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.ConfigBasePath = GetMediaPortalDir(path.InnerText);
                     }
                 }
                 // get the Plugin base path
@@ -171,7 +171,7 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.pluginPath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.PluginPath = GetMediaPortalDir(path.InnerText);
                     }
                 }
                 // get the Thumbs base path
@@ -180,8 +180,8 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.thumbsPath = GetMediaPortalDir(path.InnerText);
-                        mpPaths.fanartBasePath = mpPaths.thumbsPath + "Skin Fanart\\";
+                        MpPaths.ThumbsPath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.FanartBasePath = MpPaths.ThumbsPath + "Skin Fanart\\";
                     }
                 }
                 // get the Languages base path
@@ -190,7 +190,7 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.langBasePath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.LangBasePath = GetMediaPortalDir(path.InnerText);
                     }
                 }
                 // get the Database base path
@@ -199,27 +199,27 @@ namespace EventGhostPlus
                     XmlNode path = node.SelectSingleNode("Path");
                     if (path != null)
                     {
-                        mpPaths.databasePath = GetMediaPortalDir(path.InnerText);
+                        MpPaths.DatabasePath = GetMediaPortalDir(path.InnerText);
                     }
                 }
             }
-            mpPaths.configuredSkinPath = mpPaths.skinBasePath + configuredSkin + "\\";
+            MpPaths.ConfiguredSkinPath = MpPaths.SkinBasePath + ConfiguredSkin + "\\";
         }
 
         string GetMediaPortalDir(string path)
         {
-            string CommonAppData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string commonAppData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             // Replace special folder variables if they exist
             // MediaPortal currently only uses two types
             path = path.ToLower();
-            path = path.Replace("%appdata%", AppData);
-            path = path.Replace("%programdata%", CommonAppData);
+            path = path.Replace("%appdata%", appData);
+            path = path.Replace("%programdata%", commonAppData);
             // Check if the path is not rooted ie. a custom directory (including UNC)
             // If directory is relative e.g. 'skin\', prefix with Base Dir
             if (!Path.IsPathRooted(path))
             {
-                path = Path.Combine(SkinInfo.mpPaths.sMPbaseDir, path);
+                path = Path.Combine(SkinInfo.MpPaths.SMPbaseDir, path);
             }
             // Check if there is a trailing backslash
             if (!path.EndsWith(@"\"))
@@ -229,9 +229,9 @@ namespace EventGhostPlus
             return path;
         }
 
-        string readMPConfiguration(string sectionName, string entryName)
+        string ReadMpConfiguration(string sectionName, string entryName)
         {
-            string fMPdirs = mpPaths.configBasePath + "MediaPortal.xml";
+            string fMPdirs = MpPaths.ConfigBasePath + "MediaPortal.xml";
             XmlDocument doc = new XmlDocument();
             if (!File.Exists(fMPdirs))
             {

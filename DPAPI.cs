@@ -23,37 +23,37 @@ namespace EventGhostPlus
     /// <summary>
     /// Encrypts and decrypts data using DPAPI functions.
     /// </summary>
-    public class DPAPI
+    public class Dpapi
     {
         // Wrapper for DPAPI CryptProtectData function.
         [DllImport("crypt32.dll",
                     SetLastError = true,
                     CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         private static extern
-            bool CryptProtectData(ref DATA_BLOB pPlainText,
+            bool CryptProtectData(ref DataBlob pPlainText,
                                         string szDescription,
-                                    ref DATA_BLOB pEntropy,
+                                    ref DataBlob pEntropy,
                                         IntPtr pReserved,
-                                    ref CRYPTPROTECT_PROMPTSTRUCT pPrompt,
+                                    ref CryptprotectPromptstruct pPrompt,
                                         int dwFlags,
-                                    ref DATA_BLOB pCipherText);
+                                    ref DataBlob pCipherText);
 
         // Wrapper for DPAPI CryptUnprotectData function.
         [DllImport("crypt32.dll",
                     SetLastError = true,
                     CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         private static extern
-            bool CryptUnprotectData(ref DATA_BLOB pCipherText,
+            bool CryptUnprotectData(ref DataBlob pCipherText,
                                     ref string pszDescription,
-                                    ref DATA_BLOB pEntropy,
+                                    ref DataBlob pEntropy,
                                         IntPtr pReserved,
-                                    ref CRYPTPROTECT_PROMPTSTRUCT pPrompt,
+                                    ref CryptprotectPromptstruct pPrompt,
                                         int dwFlags,
-                                    ref DATA_BLOB pPlainText);
+                                    ref DataBlob pPlainText);
 
         // BLOB structure used to pass data to DPAPI functions.
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct DATA_BLOB
+        internal struct DataBlob
         {
             public int cbData;
             public IntPtr pbData;
@@ -61,7 +61,7 @@ namespace EventGhostPlus
 
         // Prompt structure to be used for required parameters.
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        internal struct CRYPTPROTECT_PROMPTSTRUCT
+        internal struct CryptprotectPromptstruct
         {
             public int cbSize;
             public int dwPromptFlags;
@@ -73,8 +73,8 @@ namespace EventGhostPlus
         static private readonly IntPtr NullPtr = ((IntPtr)((int)(0)));
 
         // DPAPI key initialization flags.
-        private const int CRYPTPROTECT_UI_FORBIDDEN = 0x1;
-        private const int CRYPTPROTECT_LOCAL_MACHINE = 0x4;
+        private const int CryptprotectUiForbidden = 0x1;
+        private const int CryptprotectLocalMachine = 0x4;
 
         /// <summary>
         /// Initializes empty prompt structure.
@@ -82,10 +82,10 @@ namespace EventGhostPlus
         /// <param name="ps">
         /// Prompt parameter (which we do not actually need).
         /// </param>
-        private static void InitPrompt(ref CRYPTPROTECT_PROMPTSTRUCT ps)
+        private static void InitPrompt(ref CryptprotectPromptstruct ps)
         {
             ps.cbSize = Marshal.SizeOf(
-                                      typeof(CRYPTPROTECT_PROMPTSTRUCT));
+                                      typeof(CryptprotectPromptstruct));
             ps.dwPromptFlags = 0;
             ps.hwndApp = NullPtr;
             ps.szPrompt = null;
@@ -100,7 +100,7 @@ namespace EventGhostPlus
         /// <param name="blob">
         /// Returned blob structure.
         /// </param>
-        private static void InitBLOB(byte[] data, ref DATA_BLOB blob)
+        private static void InitBlob(byte[] data, ref DataBlob blob)
         {
             // Use empty array for null parameter.
             if (data == null)
@@ -126,7 +126,7 @@ namespace EventGhostPlus
         public enum KeyType { UserKey = 1, MachineKey };
 
         // It is reasonable to set default key type to user key.
-        private const KeyType defaultKeyType = KeyType.UserKey;
+        private const KeyType DefaultKeyType = KeyType.UserKey;
 
         /// <summary>
         /// Calls DPAPI CryptProtectData function to encrypt a plaintext
@@ -141,7 +141,7 @@ namespace EventGhostPlus
         /// </returns>
         public static string Encrypt(string plainText)
         {
-            return Encrypt(defaultKeyType, plainText, String.Empty,
+            return Encrypt(DefaultKeyType, plainText, String.Empty,
                             String.Empty);
         }
 
@@ -286,14 +286,14 @@ namespace EventGhostPlus
             if (description == null) description = String.Empty;
 
             // Create BLOBs to hold data.
-            DATA_BLOB plainTextBlob = new DATA_BLOB();
-            DATA_BLOB cipherTextBlob = new DATA_BLOB();
-            DATA_BLOB entropyBlob = new DATA_BLOB();
+            DataBlob plainTextBlob = new DataBlob();
+            DataBlob cipherTextBlob = new DataBlob();
+            DataBlob entropyBlob = new DataBlob();
 
             // We only need prompt structure because it is a required
             // parameter.
-            CRYPTPROTECT_PROMPTSTRUCT prompt =
-                                      new CRYPTPROTECT_PROMPTSTRUCT();
+            CryptprotectPromptstruct prompt =
+                                      new CryptprotectPromptstruct();
             InitPrompt(ref prompt);
 
             try
@@ -301,7 +301,7 @@ namespace EventGhostPlus
                 // Convert plaintext bytes into a BLOB structure.
                 try
                 {
-                    InitBLOB(plainTextBytes, ref plainTextBlob);
+                    InitBlob(plainTextBytes, ref plainTextBlob);
                 }
                 catch (Exception ex)
                 {
@@ -312,7 +312,7 @@ namespace EventGhostPlus
                 // Convert entropy bytes into a BLOB structure.
                 try
                 {
-                    InitBLOB(entropyBytes, ref entropyBlob);
+                    InitBlob(entropyBytes, ref entropyBlob);
                 }
                 catch (Exception ex)
                 {
@@ -321,11 +321,11 @@ namespace EventGhostPlus
                 }
 
                 // Disable any types of UI.
-                int flags = CRYPTPROTECT_UI_FORBIDDEN;
+                int flags = CryptprotectUiForbidden;
 
                 // When using machine-specific key, set up machine flag.
                 if (keyType == KeyType.MachineKey)
-                    flags |= CRYPTPROTECT_LOCAL_MACHINE;
+                    flags |= CryptprotectLocalMachine;
 
                 // Call DPAPI to encrypt data.
                 bool success = CryptProtectData(ref plainTextBlob,
@@ -488,14 +488,14 @@ namespace EventGhostPlus
                                      out string description)
         {
             // Create BLOBs to hold data.
-            DATA_BLOB plainTextBlob = new DATA_BLOB();
-            DATA_BLOB cipherTextBlob = new DATA_BLOB();
-            DATA_BLOB entropyBlob = new DATA_BLOB();
+            DataBlob plainTextBlob = new DataBlob();
+            DataBlob cipherTextBlob = new DataBlob();
+            DataBlob entropyBlob = new DataBlob();
 
             // We only need prompt structure because it is a required
             // parameter.
-            CRYPTPROTECT_PROMPTSTRUCT prompt =
-                                      new CRYPTPROTECT_PROMPTSTRUCT();
+            CryptprotectPromptstruct prompt =
+                                      new CryptprotectPromptstruct();
             InitPrompt(ref prompt);
 
             // Initialize description string.
@@ -506,7 +506,7 @@ namespace EventGhostPlus
                 // Convert ciphertext bytes into a BLOB structure.
                 try
                 {
-                    InitBLOB(cipherTextBytes, ref cipherTextBlob);
+                    InitBlob(cipherTextBytes, ref cipherTextBlob);
                 }
                 catch (Exception ex)
                 {
@@ -517,7 +517,7 @@ namespace EventGhostPlus
                 // Convert entropy bytes into a BLOB structure.
                 try
                 {
-                    InitBLOB(entropyBytes, ref entropyBlob);
+                    InitBlob(entropyBytes, ref entropyBlob);
                 }
                 catch (Exception ex)
                 {
@@ -528,7 +528,7 @@ namespace EventGhostPlus
                 // Disable any types of UI. CryptUnprotectData does not
                 // mention CRYPTPROTECT_LOCAL_MACHINE flag in the list of
                 // supported flags so we will not set it up.
-                const int flags = CRYPTPROTECT_UI_FORBIDDEN;
+                const int flags = CryptprotectUiForbidden;
 
                 // Call DPAPI to decrypt data.
                 bool success = CryptUnprotectData(ref cipherTextBlob,
@@ -587,7 +587,7 @@ namespace EventGhostPlus
                 string entropy = null;
 
                 // Call DPAPI to encrypt data with user-specific key.
-                string encrypted = DPAPI.Encrypt(DPAPI.KeyType.UserKey,
+                string encrypted = Dpapi.Encrypt(Dpapi.KeyType.UserKey,
                                                   text,
                                                   entropy,
                                                   "string");
@@ -611,7 +611,7 @@ namespace EventGhostPlus
                 string entropy = null;
                 string description;
 
-                string decrypted = DPAPI.Decrypt(text,
+                string decrypted = Dpapi.Decrypt(text,
                                                     entropy,
                                                 out description);
                 return decrypted;

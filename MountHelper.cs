@@ -8,26 +8,26 @@ namespace EventGhostPlus
 {
     public static class MountHelper
     {
-        public static string CheckMount(ref string SearchFile)
+        public static string CheckMount(ref string searchFile)
         {
-            string MountDrive = "";
+            string mountDrive = "";
             if (EventGhostPlus.DebugMode) Logger.Debug("Getting mount drive (if any)");
-            MountDrive = DaemonTools.GetVirtualDrive();
-            if (!MountDrive.Equals(""))
+            mountDrive = DaemonTools.GetVirtualDrive();
+            if (!mountDrive.Equals(""))
             {
-                if (EventGhostPlus.DebugMode) Logger.Debug("Found mount drive: " + MountDrive);
+                if (EventGhostPlus.DebugMode) Logger.Debug("Found mount drive: " + mountDrive);
                 if (DaemonTools.MountedIsoFile != "") // if drive is mounted.
                 {
                     if (EventGhostPlus.DebugMode) Logger.Debug("An ISO is mounted.");
-                    if (SearchFile.Contains(MountDrive)) // if the mountdrive is the same as the drive in the Current playing file.
+                    if (searchFile.Contains(mountDrive)) // if the mountdrive is the same as the drive in the Current playing file.
                     {
                         if (EventGhostPlus.DebugMode) Logger.Debug("Playing file from a mounted drive.");
-                        SearchFile = DaemonTools.MountedIsoFile;
+                        searchFile = DaemonTools.MountedIsoFile;
                     }
                }
             }
-            if (EventGhostPlus.DebugMode) Logger.Debug("Returning filename: "+SearchFile);
-            return SearchFile;
+            if (EventGhostPlus.DebugMode) Logger.Debug("Returning filename: "+searchFile);
+            return searchFile;
         }
     }
 }

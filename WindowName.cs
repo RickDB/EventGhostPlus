@@ -13,12 +13,12 @@ namespace EventGhostPlus
     {
         public class Window
         {
-            public int id;
-            public string name;
+            public int Id;
+            public string Name;
             public Window(int id, string name)
             {
-                this.id = id;
-                this.name = name;
+                this.Id = id;
+                this.Name = name;
             }
         }
         public List<Window> WindowNames = new List<Window>();
@@ -28,7 +28,7 @@ namespace EventGhostPlus
             int count = 0;
             new SkinInfo();
             string tempstr = "";
-            string[] files = System.IO.Directory.GetFiles(SkinInfo.mpPaths.configuredSkinPath);
+            string[] files = System.IO.Directory.GetFiles(SkinInfo.MpPaths.ConfiguredSkinPath);
             if (EventGhostPlus.DebugMode) Logger.Debug("Loading names of windows to memory.");
             foreach (string file in files)
             {
@@ -53,11 +53,11 @@ namespace EventGhostPlus
             if (EventGhostPlus.DebugMode) Logger.Debug("Loaded " + count + " window names in memory.");
         }
 
-        public string GetName(int WinID)
+        public string GetName(int winId)
         {
             string tempstr = "";
-            List<Window> wnd = WindowNames.FindAll(delegate(Window w) { return w.id == WinID; });
-            wnd.ForEach(delegate(Window w) { tempstr = w.name; });
+            List<Window> wnd = WindowNames.FindAll(delegate(Window w) { return w.Id == winId; });
+            wnd.ForEach(delegate(Window w) { tempstr = w.Name; });
             return tempstr;
         }
 
