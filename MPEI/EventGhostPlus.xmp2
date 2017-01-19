@@ -15,7 +15,7 @@
               <UpdateOption>AlwaysOverwrite</UpdateOption>
               <LocalFileName>..\bin\x86\Release\EventGhostPlus.dll</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{830cb4ba-4dac-49b6-9af2-68ce5efc01f1}-EventGhostPlus.dll</ZipFileName>
-              <DestinationFilename>%Plugins%\Windows\EventGhostPlus.dll</DestinationFilename>
+              <DestinationFilename>%Plugins%\Process\EventGhostPlus.dll</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -117,6 +117,60 @@ Click Next to continue or Cancel to exit Setup.</Value>
               </Params>
               <ExecuteLocation>AfterPanelShow</ExecuteLocation>
             </ActionItem>
+            <ActionItem Name="Script" ActionType="Script" ConditionGroup="">
+              <Params>
+                <Items>
+                  <SectionParam Name="Script">
+                    <Value>//css_reference "MpeCore.dll";
+
+using MpeCore.Classes;
+using MpeCore;
+using System.IO;
+using System;
+using System.Windows.Forms;
+using System.Diagnostics;
+
+public class Script
+{
+public static void Main(PackageClass packageClass, ActionItem actionItem)
+        {
+	string SourceFilePath_plugin = MpeInstaller.TransformInRealPath("%Plugins%");
+	try
+	{
+		if (File.Exists(Path.Combine(SourceFilePath_plugin, "Windows\\EventGhostPlus.dll")))
+		{
+			File.Delete(Path.Combine(SourceFilePath_plugin, "Windows\\EventGhostPlus.dll"));
+		}
+	   }
+	   catch { }
+        }
+}
+
+</Value>
+                    <ValueType>Script</ValueType>
+                    <Description />
+                  </SectionParam>
+                  <SectionParam Name="Uninstall Script">
+                    <Value>//css_reference "MpeCore.dll";
+
+using MpeCore.Classes;
+using MpeCore;
+
+public class Script
+{
+    public static void Main(PackageClass packageClass, UnInstallItem item)
+    {
+        return;
+    }
+}
+</Value>
+                    <ValueType>Script</ValueType>
+                    <Description />
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
           </Items>
         </Actions>
         <IncludedGroups />
@@ -186,8 +240,8 @@ Click Next to continue or Cancel to exit Setup.</Value>
         <CompatibleVersion>
           <Items>
             <CompatibleVersionItem>
-              <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
-              <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+              <MinRequiredVersion>1.15.100.0</MinRequiredVersion>
+              <DesignedForVersion>1.15.100.0</DesignedForVersion>
             </CompatibleVersionItem>
           </Items>
         </CompatibleVersion>
@@ -195,6 +249,8 @@ Click Next to continue or Cancel to exit Setup.</Value>
           <Items>
             <SubSystemItem Name="MP.Config" />
             <SubSystemItem Name="MP.Input.Mapping" />
+            <SubSystemItem Name="MP.Players" />
+            <SubSystemItem Name="MP.Plugins" />
           </Items>
         </SubSystemsUsed>
       </PluginDependencyItem>
@@ -210,8 +266,8 @@ Click Next to continue or Cancel to exit Setup.</Value>
     <Version>
       <Major>1</Major>
       <Minor>1</Minor>
-      <Build>3</Build>
-      <Revision>6</Revision>
+      <Build>4</Build>
+      <Revision>1</Revision>
     </Version>
     <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
 
@@ -265,7 +321,7 @@ Click Next to continue or Cancel to exit Setup.</Value>
         <UpdateOption>AlwaysOverwrite</UpdateOption>
         <LocalFileName>..\bin\x86\Release\EventGhostPlus.dll</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{830cb4ba-4dac-49b6-9af2-68ce5efc01f1}-EventGhostPlus.dll</ZipFileName>
-        <DestinationFilename>%Plugins%\Windows\EventGhostPlus.dll</DestinationFilename>
+        <DestinationFilename>%Plugins%\Process\EventGhostPlus.dll</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
