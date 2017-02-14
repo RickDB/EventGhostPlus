@@ -235,51 +235,30 @@ public class Script
     </Items>
   </Dependencies>
   <PluginDependencies>
-    <Items>
-      <PluginDependencyItem AssemblyName="EventGhostPlus.dll">
-        <CompatibleVersion>
-          <Items>
-            <CompatibleVersionItem>
-              <MinRequiredVersion>1.15.100.0</MinRequiredVersion>
-              <DesignedForVersion>1.15.100.0</DesignedForVersion>
-            </CompatibleVersionItem>
-          </Items>
-        </CompatibleVersion>
-        <SubSystemsUsed>
-          <Items>
-            <SubSystemItem Name="MP.Config" />
-            <SubSystemItem Name="MP.Input.Mapping" />
-            <SubSystemItem Name="MP.Players" />
-            <SubSystemItem Name="MP.Plugins" />
-          </Items>
-        </SubSystemsUsed>
-      </PluginDependencyItem>
-    </Items>
+    <Items />
   </PluginDependencies>
   <GeneralInfo>
     <Name>EventGhostPlus</Name>
     <Id>bcf8adde-0b14-43e9-87e8-3e97d64c3e74</Id>
-    <Author>DaBIGOne</Author>
+    <Author>DaBIGOne, Rick164</Author>
     <HomePage />
     <ForumPage>http://forum.team-mediaportal.com/threads/eventghostplus.113463/</ForumPage>
-    <UpdateUrl>http://www.team-mediaportal.com/index.php?option=com_mtree&amp;amp;task=att_download&amp;amp;link_id=248&amp;amp;cf_id=52</UpdateUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/RickDB/EventGhostPlus/master/MPEI/EventGhostPlus_update.xml</UpdateUrl>
     <Version>
       <Major>1</Major>
       <Minor>1</Minor>
       <Build>4</Build>
       <Revision>1</Revision>
     </Version>
-    <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
-
-- Sending events to EventGhost.
-
+    <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
+
+- Sending events to EventGhost.
+
 - Virtual Remote, listening for commands from EventGhost.</ExtensionDescription>
-    <VersionDescription>1.1.3.6
-
-- Updated installer package and rebuild against .NET 4.0 and Mediaportal 1.12</VersionDescription>
+    <VersionDescription />
     <DevelopmentStatus />
-    <OnlineLocation />
-    <ReleaseDate>2015-09-05T18:49:57.8244398+02:00</ReleaseDate>
+    <OnlineLocation>https://raw.githubusercontent.com/RickDB/EventGhostPlus/master/MPEI/Releases/EventGhostPlus_1.1.4.1.mpe1</OnlineLocation>
+    <ReleaseDate>2017-01-19T18:49:57</ReleaseDate>
     <Tags />
     <Location>..\Release\[Name]_[Version].mpe1</Location>
     <Params>
@@ -342,7 +321,7 @@ public class Script
   <ProjectSettings>
     <FolderGroups />
     <ProjectFilename>EventGhostPlus.xmp2</ProjectFilename>
-    <UpdatePath1 />
+    <UpdatePath1>EventGhostPlus_update.xml</UpdatePath1>
     <UpdatePath2 />
     <UpdatePath3 />
   </ProjectSettings>
