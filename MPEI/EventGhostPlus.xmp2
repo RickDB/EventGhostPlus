@@ -288,7 +288,7 @@ public class Script
 - Virtual Remote, listening for commands from EventGhost.</ExtensionDescription>
     <VersionDescription />
     <DevelopmentStatus />
-    <OnlineLocation>https://raw.githubusercontent.com/RickDB/EventGhostPlus/master/MPEI/Releases/EventGhostPlus_1.1.4.1.mpe1</OnlineLocation>
+    <OnlineLocation>https://raw.githubusercontent.com/RickDB/EventGhostPlus/master/MPEI/Releases/EventGhostPlus_1.1.4.2.mpe1</OnlineLocation>
     <ReleaseDate>2017-01-19T18:49:57</ReleaseDate>
     <Tags />
     <Location>Releases\[Name]_[Version].mpe1</Location>
