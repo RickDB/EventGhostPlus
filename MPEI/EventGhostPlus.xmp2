@@ -235,7 +235,26 @@ public class Script
     </Items>
   </Dependencies>
   <PluginDependencies>
-    <Items />
+    <Items>
+      <PluginDependencyItem AssemblyName="EventGhostPlus.dll">
+        <CompatibleVersion>
+          <Items>
+            <CompatibleVersionItem>
+              <MinRequiredVersion>1.15.100.0</MinRequiredVersion>
+              <DesignedForVersion>1.15.100.0</DesignedForVersion>
+            </CompatibleVersionItem>
+          </Items>
+        </CompatibleVersion>
+        <SubSystemsUsed>
+          <Items>
+            <SubSystemItem Name="MP.Config" />
+            <SubSystemItem Name="MP.Input.Mapping" />
+            <SubSystemItem Name="MP.Players" />
+            <SubSystemItem Name="MP.Plugins" />
+          </Items>
+        </SubSystemsUsed>
+      </PluginDependencyItem>
+    </Items>
   </PluginDependencies>
   <GeneralInfo>
     <Name>EventGhostPlus</Name>
@@ -248,19 +267,31 @@ public class Script
       <Major>1</Major>
       <Minor>1</Minor>
       <Build>4</Build>
-      <Revision>1</Revision>
+      <Revision>2</Revision>
     </Version>
-    <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
-
-- Sending events to EventGhost.
-
+    <ExtensionDescription>EventGhostPlus is an all purpose EventGhost Plugin.
+
+
+
+
+
+
+
+- Sending events to EventGhost.
+
+
+
+
+
+
+
 - Virtual Remote, listening for commands from EventGhost.</ExtensionDescription>
     <VersionDescription />
     <DevelopmentStatus />
     <OnlineLocation>https://raw.githubusercontent.com/RickDB/EventGhostPlus/master/MPEI/Releases/EventGhostPlus_1.1.4.1.mpe1</OnlineLocation>
     <ReleaseDate>2017-01-19T18:49:57</ReleaseDate>
     <Tags />
-    <Location>..\Release\[Name]_[Version].mpe1</Location>
+    <Location>Releases\[Name]_[Version].mpe1</Location>
     <Params>
       <Items>
         <SectionParam Name="Icon">
